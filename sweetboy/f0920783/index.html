@@ -126,7 +126,7 @@
 <meta property="og:image" content="http://dubbo.io/books/dubbo-user-book/sources/images/dubbo-architecture-roadmap.jpg">
 <meta property="og:image" content="http://dubbo.io/books/dubbo-user-book/sources/images/dubbo-architecture.jpg">
 <meta property="og:image" content="http://dubbo.io/books/dubbo-user-book/sources/images/dubbo-architecture-future.jpg">
-<meta property="og:updated_time" content="2018-03-23T13:35:01.618Z">
+<meta property="og:updated_time" content="2018-03-23T13:37:16.644Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="DUBBO浅析与手记">
 <meta name="twitter:description" content="本文将适当的介绍  什么是dubbo（what） 何时该使用dubbo(why) dubbo的原理(how) dubbo源码的简单分析(think)   什么是dubbo dubbo?阿里巴巴淘宝团队荣誉出品，早期担当阿里rpc(远程调用工具)，在githup（一代码托管网站）上有迹可查的最早发行版本是on 27 Oct 2011，据悉阿里内部已弃用dubbo改用HSF(俗称好舒服）。同时，提供与">
@@ -496,7 +496,7 @@
 <h5 id="流动计算架构"><a href="#流动计算架构" class="headerlink" title="流动计算架构"></a>流动计算架构</h5><p>当服务越来越多，容量的评估，小服务资源的浪费等问题逐渐显现，此时需增加一个调度中心基于访问压力实时管理集群容量，提高集群利用率。此时，用于提高机器利用率的资源调度和治理中心(SOA)是关键。</p>
 </blockquote>
 <hr>
-<h3 id="何时使用"><a href="#何时使用" class="headerlink" title="何时使用"></a>何时使用</h3><p>  何时使用分布式架构，当你的项目功能较为丰富且需要随着时间和业务的发展需求不断变更时，分布式架构或者说微服务当时不二之选。<br>  但是，由于不同的功能拆分成了一个个相对独立的服务,这使得对工程项目的问题发现与治理都将变得困难起来。当然，它也带来了一系列的优点，因为不同功能我们封装成了一个个服务，这使得我们在更改一些功能模块时不需要重启整个项目工程，同时，因为不同模块间是依靠通讯协议来实现一<br>种联系依赖，所以，我们不同的模块可以选择最适合的编程语言来服务业务。<br>  如此，我们可知，当你需要一个看起来炫酷且可靠服务于海量用户的项目微服务将是不二之选，当你只需要一个功能简单，用户<br>数并不是很庞大的服务时，简单的垂直架构更能帮助我们专注于业务的编写，而大大降低了对运维的需求。</p>
+<h3 id="何时使用"><a href="#何时使用" class="headerlink" title="何时使用"></a>何时使用</h3><p>  何时使用分布式架构，当你的项目功能较为丰富且需要随着时间和业务的发展需求不断变更时，分布式架构或者说微服务当时不二之选。<br>  但是，由于不同的功能拆分成了一个个相对独立的服务,这使得对工程项目的问题发现与治理都将变得困难起来。当然，它也带来了一系列的优点，因为不同功能我们封装成了一个个服务，这使得我们在更改一些功能模块时不需要重启整个项目工程，同时，因为不同模块间是依靠通讯协议来实现一种联系依赖，所以，我们不同的模块可以选择最适合的编程语言来服务业务。<br>  如此，我们可知，当你需要一个看起来炫酷且可靠服务于海量用户的项目微服务将是不二之选，当你只需要一个功能简单，用户数并不是很庞大的服务时，简单的垂直架构更能帮助我们专注于业务的编写，而大大降低了对运维的需求。</p>
 <hr>
 <h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><p>这里不进行介绍，你可以参考管网。官方为我们提供了xml配置，属性配置，API配置，注解等配置方法</p>
 <p><a href="http://dubbo.io/books/dubbo-user-book/configuration/" target="_blank" rel="noopener">链接</a></p>
