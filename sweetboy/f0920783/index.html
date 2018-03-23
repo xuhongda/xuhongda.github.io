@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Monda:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="架构,微服务," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="finenote" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="本文将适当的介绍  什么是dubbo（what） 何时该使用dubbo(why) dubbo的原理(how) dubbo源码的简单分析(think)   什么是dubbo dubbo?阿里巴巴淘宝团队荣誉出品，早期担当阿里rpc(远程调用工具)，在githup（一代码托管网站）上有迹可查的最早发行版本是on 27 Oct 2011，据悉阿里内部已弃用dubbo改用HSF(俗称好舒服）。同时，提供与">
+<meta name="keywords" content="架构,微服务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DUBBO浅析与手记">
+<meta property="og:url" content="http://yoursite.com/sweetboy/f0920783/index.html">
+<meta property="og:site_name" content="finenote">
+<meta property="og:description" content="本文将适当的介绍  什么是dubbo（what） 何时该使用dubbo(why) dubbo的原理(how) dubbo源码的简单分析(think)   什么是dubbo dubbo?阿里巴巴淘宝团队荣誉出品，早期担当阿里rpc(远程调用工具)，在githup（一代码托管网站）上有迹可查的最早发行版本是on 27 Oct 2011，据悉阿里内部已弃用dubbo改用HSF(俗称好舒服）。同时，提供与">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://dubbo.io/books/dubbo-user-book/sources/images/dubbo-architecture.jpg">
+<meta property="og:image" content="http://dubbo.io/books/dubbo-user-book/sources/images/dubbo-architecture-roadmap.jpg">
+<meta property="og:image" content="http://dubbo.io/books/dubbo-user-book/sources/images/dubbo-architecture.jpg">
+<meta property="og:image" content="http://dubbo.io/books/dubbo-user-book/sources/images/dubbo-architecture-future.jpg">
+<meta property="og:updated_time" content="2018-03-23T12:50:06.033Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DUBBO浅析与手记">
+<meta name="twitter:description" content="本文将适当的介绍  什么是dubbo（what） 何时该使用dubbo(why) dubbo的原理(how) dubbo源码的简单分析(think)   什么是dubbo dubbo?阿里巴巴淘宝团队荣誉出品，早期担当阿里rpc(远程调用工具)，在githup（一代码托管网站）上有迹可查的最早发行版本是on 27 Oct 2011，据悉阿里内部已弃用dubbo改用HSF(俗称好舒服）。同时，提供与">
+<meta name="twitter:image" content="http://dubbo.io/books/dubbo-user-book/sources/images/dubbo-architecture.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/sweetboy/f0920783/"/>
+
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "7626376b"
+    });
+  daovoice('update');
+  </script>
+
+
+
+  <title>DUBBO浅析与手记 | finenote</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?560e5331a7e68cd6133f9381118020c2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner">
+<div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+    <!--网站标题-->
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <!--<span class="logo-line-before"><i></i></i></span>-->
+        <font color="#dbdbdb" ><i class="fa fa-facebook fa-4x" aria-hidden="true"></i></font>
+        <!--<span class="site-title"><b>finenote</b></span>-->
+        <!--<span class="logo-line-after"><i></i></span>-->
+      </a>
+    </div>
+      
+        <p class="site-subtitle">北极第一暖男~闲聊~扯淡~妄想</p>
+      
+  </div>
+</div>
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+<!--<a href="http://www.finenote.cn/about"><img class="selfheader" src="https://github.com/xuhongda/pics/raw/master/facebook(1).png"/></a>-->
+<!--<i class="selfheader fa fa-facebook-square fa-2x" aria-hidden="true" ></i>-->
+<span class="selfheader"><b>finenote</b></span>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/sweetboy/f0920783/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xuhongda">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="finenote">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">DUBBO浅析与手记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-20T20:59:55+08:00">
+                2018-03-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                  <span class="post-meta-divider">|</span>
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  2,073 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">
+                  阅读时长
+                  </span>
+                
+                <span title="阅读时长">
+                    ≈7 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <script src="\assets\js\APlayer.min.js"> </script><p>本文将适当的介绍</p>
+<ol>
+<li>什么是dubbo（what）</li>
+<li>何时该使用dubbo(why)</li>
+<li>dubbo的原理(how)</li>
+<li>dubbo源码的简单分析(think)</li>
+</ol>
+<hr>
+<h3 id="什么是dubbo"><a href="#什么是dubbo" class="headerlink" title="什么是dubbo"></a>什么是dubbo</h3><blockquote>
+<p>dubbo?阿里巴巴淘宝团队荣誉出品，早期担当阿里rpc(远程调用工具)，在githup（一代码托管网站）上有迹可查的最早发行版本是<strong>on 27 Oct 2011</strong>，据悉阿里内部已弃用dubbo改用HSF(俗称好舒服）。同时，提供与其类似服务的有Spring Cloud 当然后者提供的是一套完整微服务解决方案。</p>
+</blockquote>
+<p>这张图片为我们展示了dubbo的架构<br><img src="http://dubbo.io/books/dubbo-user-book/sources/images/dubbo-architecture.jpg" alt="image"><br><a id="more"></a><br>所以，dubbo就是阿里员工写的一堆java代码。</p>
+<h3 id="起什么作用"><a href="#起什么作用" class="headerlink" title="起什么作用"></a>起什么作用</h3><blockquote>
+<p>提供服务的 输入与输出，阿里推荐其与spring整合，推荐zookeeper作为它的注册中心。那么服务又从何谈起了，让我们来回顾互联网架构的发展历程</p>
+</blockquote>
+<h3 id="架构的发展历程"><a href="#架构的发展历程" class="headerlink" title="架构的发展历程"></a>架构的发展历程</h3><p>（摘自阿里）</p>
+<h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><blockquote>
+<p>随着互联网的发展，网站应用的规模不断扩大，常规的垂直应用架构已无法应对，分布式服务架构以及流动计算架构势在必行，亟需一个治理系统确保架构有条不紊的演进。</p>
+</blockquote>
+<p><img src="http://dubbo.io/books/dubbo-user-book/sources/images/dubbo-architecture-roadmap.jpg" alt="image"></p>
+<h5 id="单一应用架构"><a href="#单一应用架构" class="headerlink" title="单一应用架构"></a>单一应用架构</h5><blockquote>
+<p>当网站流量很小时，只需一个应用，将所有功能都部署在一起，以减少部署节点和成本。此时，用于简化增删改查工作量的数据访问框架(ORM)是关键。</p>
+<h5 id="垂直应用架构"><a href="#垂直应用架构" class="headerlink" title="垂直应用架构"></a>垂直应用架构</h5><p>当访问量逐渐增大，单一应用增加机器带来的加速度越来越小，将应用拆成互不相干的几个应用，以提升效率。此时，用于加速前端页面开发的Web框架(MVC)是关键。</p>
+<h5 id="分布式服务架构"><a href="#分布式服务架构" class="headerlink" title="分布式服务架构"></a>分布式服务架构</h5><p>当垂直应用越来越多，应用之间交互不可避免，将核心业务抽取出来，作为独立的服务，逐渐形成稳定的服务中心，使前端应用能更快速的响应多变的市场需求。此时，用于提高业务复用及整合的分布式服务框架(RPC)是关键。</p>
+<h5 id="流动计算架构"><a href="#流动计算架构" class="headerlink" title="流动计算架构"></a>流动计算架构</h5><p>当服务越来越多，容量的评估，小服务资源的浪费等问题逐渐显现，此时需增加一个调度中心基于访问压力实时管理集群容量，提高集群利用率。此时，用于提高机器利用率的资源调度和治理中心(SOA)是关键。</p>
+</blockquote>
+<hr>
+<h3 id="何时使用"><a href="#何时使用" class="headerlink" title="何时使用"></a>何时使用</h3><p>何时使用分布式架构，当你的项目功能较为丰富且需要随着时间和业务的发展需求不断变更时，分布式架构或者说微服务当时不二之选。但是，由于不同的功能拆分成了一个个相对独立的服务这使得对工程项目的问题发现与治疗都将变得困难起来。当然，它也带来了一系列的优点，因为不同功能我们封装成了一个个服务，这使得我们在更改一些功能模块时不需要重启整个项目工程，同时，因为不同模块间是依靠通讯协议来实现一种联系依赖，所以，我们不同的模块可以选择最适合的编程语言来服务业务。如此，我们可知，当你需要一个看起来炫酷且可靠服务于海量用户的项目微服务将是不二之选，当你只需要一个功能简单，用户数并不是很庞大的服务时，简单的垂直架构更能帮助我们专注于业务的编写，而大大降低了对运维的需求。</p>
+<hr>
+<h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><p>这里不进行介绍，你可以参考管网。官方为我们提供了xml配置，属性配置，API配置，注解等配置方法</p>
+<p><a href="http://dubbo.io/books/dubbo-user-book/configuration/" target="_blank" rel="noopener">链接</a></p>
+<hr>
+<h3 id="dubbo的运转机制"><a href="#dubbo的运转机制" class="headerlink" title="dubbo的运转机制"></a>dubbo的运转机制</h3><p>dubbo架构<br><img src="http://dubbo.io/books/dubbo-user-book/sources/images/dubbo-architecture.jpg" alt="image"></p>
+<table>
+<thead>
+<tr>
+<th>节点</th>
+<th>角色说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Provider</td>
+<td>暴露服务的服务提供方</td>
+</tr>
+<tr>
+<td>Consumer</td>
+<td>调用远程服务的服务消费方</td>
+</tr>
+<tr>
+<td>Registry</td>
+<td>服务注册与发现的注册中心</td>
+</tr>
+<tr>
+<td>Monitor</td>
+<td>统计服务的调用次数和调用时间的监控中心</td>
+</tr>
+<tr>
+<td>Container</td>
+<td>服务运行容器</td>
+</tr>
+</tbody>
+</table>
+<p>调用关系说明</p>
+<pre><code>服务容器负责启动，加载，运行服务提供者。
+服务提供者在启动时，向注册中心注册自己提供的服务。
+服务消费者在启动时，向注册中心订阅自己所需的服务。
+注册中心返回服务提供者地址列表给消费者，如果有变更，注册中心将基于长连接推送变更数据给消费者。
+服务消费者，从提供者地址列表中，基于软负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用。
+服务消费者和提供者，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心。
+</code></pre><p>Dubbo 架构具有以下几个特点，分别是连通性、健壮性、伸缩性、以及向未来架构的升级性。<br>连通性</p>
+<pre><code>注册中心负责服务地址的注册与查找，相当于目录服务，服务提供者和消费者只在启动时与注册中心交互，注册中心不转发请求，压力较小
+监控中心负责统计各服务调用次数，调用时间等，统计先在内存汇总后每分钟一次发送到监控中心服务器，并以报表展示
+服务提供者向注册中心注册其提供的服务，并汇报调用时间到监控中心，此时间不包含网络开销
+服务消费者向注册中心获取服务提供者地址列表，并根据负载算法直接调用提供者，同时汇报调用时间到监控中心，此时间包含网络开销
+注册中心，服务提供者，服务消费者三者之间均为长连接，监控中心除外
+注册中心通过长连接感知服务提供者的存在，服务提供者宕机，注册中心将立即推送事件通知消费者
+注册中心和监控中心全部宕机，不影响已运行的提供者和消费者，消费者在本地缓存了提供者列表
+注册中心和监控中心都是可选的，服务消费者可以直连服务提供者
+</code></pre><p>健状性</p>
+<pre><code>监控中心宕掉不影响使用，只是丢失部分采样数据
+数据库宕掉后，注册中心仍能通过缓存提供服务列表查询，但不能注册新服务
+注册中心对等集群，任意一台宕掉后，将自动切换到另一台
+注册中心全部宕掉后，服务提供者和服务消费者仍能通过本地缓存通讯
+服务提供者无状态，任意一台宕掉后，不影响使用
+服务提供者全部宕掉后，服务消费者应用将无法使用，并无限次重连等待服务提供者恢复
+</code></pre><p>伸缩性</p>
+<pre><code>注册中心为对等集群，可动态增加机器部署实例，所有客户端将自动发现新的注册中心
+服务提供者无状态，可动态增加机器部署实例，注册中心将推送新的服务提供者信息给消费者
+</code></pre><h5 id="升级性"><a href="#升级性" class="headerlink" title="升级性"></a>升级性</h5><p>当服务集群规模进一步扩大，带动IT治理结构进一步升级，需要实现动态部署，进行流动计算，现有分布式服务架构不会带来阻力。下图是未来可能的一种架构：<br><img src="http://dubbo.io/books/dubbo-user-book/sources/images/dubbo-architecture-future.jpg" alt="image"></p>
+<blockquote>
+<p>dubbo-architucture-futures<br>节点角色说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>节点</th>
+<th>角色说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Deployer</td>
+<td>自动部署服务的本地代理</td>
+</tr>
+<tr>
+<td>Repository</td>
+<td>仓库用于存储服务应用发布包</td>
+</tr>
+<tr>
+<td>Scheduler</td>
+<td>调度中心基于访问压力自动增减服务提供者</td>
+</tr>
+<tr>
+<td>Admin</td>
+<td>统一管理控制台</td>
+</tr>
+<tr>
+<td>Registry</td>
+<td>服务注册与发现的注册中心</td>
+</tr>
+<tr>
+<td>Monitor</td>
+<td>统计服务的调用次数和调用时间的监控中心</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="dubbo代码分析"><a href="#dubbo代码分析" class="headerlink" title="dubbo代码分析"></a>dubbo代码分析</h3><p><a href="http://www.cnblogs.com/javanoob/p/dubbo_menu.html" target="_blank" rel="noopener">分享链接</a></p>
+
+      
+    </div>
+    
+    
+    
+    
+          <div>
+            <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-flag-checkered" aria-hidden="true"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+          </div>
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/架构/" rel="tag"><i class="fa fa-tag"></i> 架构</a>
+          
+            <a href="/tags/微服务/" rel="tag"><i class="fa fa-tag"></i> 微服务</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/sweetboy/1abae1c9/" rel="next" title="开始写文章">
+                <i class="fa fa-chevron-left"></i> 开始写文章
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzIwNC85NzYx"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.JPG"
+               alt="xuhongda" />
+          <p class="site-author-name" itemprop="name">xuhongda</p>
+           
+              <p class="site-description motion-element" itemprop="description">我看着你，你看着那一缕阳光🌈</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://www.facebook.com/profile.php?id=100010867770787" target="_blank" title="facebook">
+                  
+                    <i class="fa fa-fw fa-facebook-square"></i>
+                  
+                    
+                      facebook
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.instagram.com/hongda_xu_7/" target="_blank" title="Instagram">
+                  
+                    <i class="fa fa-fw fa-instagram"></i>
+                  
+                    
+                      Instagram
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://weibo.com/5190588357/profile?topnav=1&wvr=6" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是dubbo"><span class="nav-number">1.</span> <span class="nav-text">什么是dubbo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#起什么作用"><span class="nav-number">2.</span> <span class="nav-text">起什么作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#架构的发展历程"><span class="nav-number">3.</span> <span class="nav-text">架构的发展历程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#背景"><span class="nav-number">3.1.</span> <span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#单一应用架构"><span class="nav-number">3.1.1.</span> <span class="nav-text">单一应用架构</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#垂直应用架构"><span class="nav-number">3.1.2.</span> <span class="nav-text">垂直应用架构</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#分布式服务架构"><span class="nav-number">3.1.3.</span> <span class="nav-text">分布式服务架构</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#流动计算架构"><span class="nav-number">3.1.4.</span> <span class="nav-text">流动计算架构</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#何时使用"><span class="nav-number">4.</span> <span class="nav-text">何时使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何使用"><span class="nav-number">5.</span> <span class="nav-text">如何使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dubbo的运转机制"><span class="nav-number">6.</span> <span class="nav-text">dubbo的运转机制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#升级性"><span class="nav-number">6.0.1.</span> <span class="nav-text">升级性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dubbo代码分析"><span class="nav-number">7.</span> <span class="nav-text">dubbo代码分析</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xuhongda</span>
+  <font>邮箱：xuhongda7@outlook.com</font>
+</div>
+
+
+ <div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>

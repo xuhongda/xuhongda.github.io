@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>finenote</title>
+  
+  <subtitle>北极第一暖男~闲聊~扯淡~妄想</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2018-03-23T12:50:06.033Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>xuhongda</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>DUBBO浅析与手记</title>
+    <link href="http://yoursite.com/sweetboy/f0920783/"/>
+    <id>http://yoursite.com/sweetboy/f0920783/</id>
+    <published>2018-03-20T12:59:55.000Z</published>
+    <updated>2018-03-23T12:50:06.033Z</updated>
+    
+    <content type="html"><![CDATA[<script src="\assets\js\APlayer.min.js"> </script><p>本文将适当的介绍</p><ol><li>什么是dubbo（what）</li><li>何时该使用dubbo(why)</li><li>dubbo的原理(how)</li><li>dubbo源码的简单分析(think)</li></ol><hr><h3 id="什么是dubbo"><a href="#什么是dubbo" class="headerlink" title="什么是dubbo"></a>什么是dubbo</h3><blockquote><p>dubbo?阿里巴巴淘宝团队荣誉出品，早期担当阿里rpc(远程调用工具)，在githup（一代码托管网站）上有迹可查的最早发行版本是<strong>on 27 Oct 2011</strong>，据悉阿里内部已弃用dubbo改用HSF(俗称好舒服）。同时，提供与其类似服务的有Spring Cloud 当然后者提供的是一套完整微服务解决方案。</p></blockquote><p>这张图片为我们展示了dubbo的架构<br><img src="http://dubbo.io/books/dubbo-user-book/sources/images/dubbo-architecture.jpg" alt="image"><br><a id="more"></a><br>所以，dubbo就是阿里员工写的一堆java代码。</p><h3 id="起什么作用"><a href="#起什么作用" class="headerlink" title="起什么作用"></a>起什么作用</h3><blockquote><p>提供服务的 输入与输出，阿里推荐其与spring整合，推荐zookeeper作为它的注册中心。那么服务又从何谈起了，让我们来回顾互联网架构的发展历程</p></blockquote><h3 id="架构的发展历程"><a href="#架构的发展历程" class="headerlink" title="架构的发展历程"></a>架构的发展历程</h3><p>（摘自阿里）</p><h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><blockquote><p>随着互联网的发展，网站应用的规模不断扩大，常规的垂直应用架构已无法应对，分布式服务架构以及流动计算架构势在必行，亟需一个治理系统确保架构有条不紊的演进。</p></blockquote><p><img src="http://dubbo.io/books/dubbo-user-book/sources/images/dubbo-architecture-roadmap.jpg" alt="image"></p><h5 id="单一应用架构"><a href="#单一应用架构" class="headerlink" title="单一应用架构"></a>单一应用架构</h5><blockquote><p>当网站流量很小时，只需一个应用，将所有功能都部署在一起，以减少部署节点和成本。此时，用于简化增删改查工作量的数据访问框架(ORM)是关键。</p><h5 id="垂直应用架构"><a href="#垂直应用架构" class="headerlink" title="垂直应用架构"></a>垂直应用架构</h5><p>当访问量逐渐增大，单一应用增加机器带来的加速度越来越小，将应用拆成互不相干的几个应用，以提升效率。此时，用于加速前端页面开发的Web框架(MVC)是关键。</p><h5 id="分布式服务架构"><a href="#分布式服务架构" class="headerlink" title="分布式服务架构"></a>分布式服务架构</h5><p>当垂直应用越来越多，应用之间交互不可避免，将核心业务抽取出来，作为独立的服务，逐渐形成稳定的服务中心，使前端应用能更快速的响应多变的市场需求。此时，用于提高业务复用及整合的分布式服务框架(RPC)是关键。</p><h5 id="流动计算架构"><a href="#流动计算架构" class="headerlink" title="流动计算架构"></a>流动计算架构</h5><p>当服务越来越多，容量的评估，小服务资源的浪费等问题逐渐显现，此时需增加一个调度中心基于访问压力实时管理集群容量，提高集群利用率。此时，用于提高机器利用率的资源调度和治理中心(SOA)是关键。</p></blockquote><hr><h3 id="何时使用"><a href="#何时使用" class="headerlink" title="何时使用"></a>何时使用</h3><p>何时使用分布式架构，当你的项目功能较为丰富且需要随着时间和业务的发展需求不断变更时，分布式架构或者说微服务当时不二之选。但是，由于不同的功能拆分成了一个个相对独立的服务这使得对工程项目的问题发现与治疗都将变得困难起来。当然，它也带来了一系列的优点，因为不同功能我们封装成了一个个服务，这使得我们在更改一些功能模块时不需要重启整个项目工程，同时，因为不同模块间是依靠通讯协议来实现一种联系依赖，所以，我们不同的模块可以选择最适合的编程语言来服务业务。如此，我们可知，当你需要一个看起来炫酷且可靠服务于海量用户的项目微服务将是不二之选，当你只需要一个功能简单，用户数并不是很庞大的服务时，简单的垂直架构更能帮助我们专注于业务的编写，而大大降低了对运维的需求。</p><hr><h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><p>这里不进行介绍，你可以参考管网。官方为我们提供了xml配置，属性配置，API配置，注解等配置方法</p><p><a href="http://dubbo.io/books/dubbo-user-book/configuration/" target="_blank" rel="noopener">链接</a></p><hr><h3 id="dubbo的运转机制"><a href="#dubbo的运转机制" class="headerlink" title="dubbo的运转机制"></a>dubbo的运转机制</h3><p>dubbo架构<br><img src="http://dubbo.io/books/dubbo-user-book/sources/images/dubbo-architecture.jpg" alt="image"></p><table><thead><tr><th>节点</th><th>角色说明</th></tr></thead><tbody><tr><td>Provider</td><td>暴露服务的服务提供方</td></tr><tr><td>Consumer</td><td>调用远程服务的服务消费方</td></tr><tr><td>Registry</td><td>服务注册与发现的注册中心</td></tr><tr><td>Monitor</td><td>统计服务的调用次数和调用时间的监控中心</td></tr><tr><td>Container</td><td>服务运行容器</td></tr></tbody></table><p>调用关系说明</p><pre><code>服务容器负责启动，加载，运行服务提供者。服务提供者在启动时，向注册中心注册自己提供的服务。服务消费者在启动时，向注册中心订阅自己所需的服务。注册中心返回服务提供者地址列表给消费者，如果有变更，注册中心将基于长连接推送变更数据给消费者。服务消费者，从提供者地址列表中，基于软负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用。服务消费者和提供者，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心。</code></pre><p>Dubbo 架构具有以下几个特点，分别是连通性、健壮性、伸缩性、以及向未来架构的升级性。<br>连通性</p><pre><code>注册中心负责服务地址的注册与查找，相当于目录服务，服务提供者和消费者只在启动时与注册中心交互，注册中心不转发请求，压力较小监控中心负责统计各服务调用次数，调用时间等，统计先在内存汇总后每分钟一次发送到监控中心服务器，并以报表展示服务提供者向注册中心注册其提供的服务，并汇报调用时间到监控中心，此时间不包含网络开销服务消费者向注册中心获取服务提供者地址列表，并根据负载算法直接调用提供者，同时汇报调用时间到监控中心，此时间包含网络开销注册中心，服务提供者，服务消费者三者之间均为长连接，监控中心除外注册中心通过长连接感知服务提供者的存在，服务提供者宕机，注册中心将立即推送事件通知消费者注册中心和监控中心全部宕机，不影响已运行的提供者和消费者，消费者在本地缓存了提供者列表注册中心和监控中心都是可选的，服务消费者可以直连服务提供者</code></pre><p>健状性</p><pre><code>监控中心宕掉不影响使用，只是丢失部分采样数据数据库宕掉后，注册中心仍能通过缓存提供服务列表查询，但不能注册新服务注册中心对等集群，任意一台宕掉后，将自动切换到另一台注册中心全部宕掉后，服务提供者和服务消费者仍能通过本地缓存通讯服务提供者无状态，任意一台宕掉后，不影响使用服务提供者全部宕掉后，服务消费者应用将无法使用，并无限次重连等待服务提供者恢复</code></pre><p>伸缩性</p><pre><code>注册中心为对等集群，可动态增加机器部署实例，所有客户端将自动发现新的注册中心服务提供者无状态，可动态增加机器部署实例，注册中心将推送新的服务提供者信息给消费者</code></pre><h5 id="升级性"><a href="#升级性" class="headerlink" title="升级性"></a>升级性</h5><p>当服务集群规模进一步扩大，带动IT治理结构进一步升级，需要实现动态部署，进行流动计算，现有分布式服务架构不会带来阻力。下图是未来可能的一种架构：<br><img src="http://dubbo.io/books/dubbo-user-book/sources/images/dubbo-architecture-future.jpg" alt="image"></p><blockquote><p>dubbo-architucture-futures<br>节点角色说明</p></blockquote><table><thead><tr><th>节点</th><th>角色说明</th></tr></thead><tbody><tr><td>Deployer</td><td>自动部署服务的本地代理</td></tr><tr><td>Repository</td><td>仓库用于存储服务应用发布包</td></tr><tr><td>Scheduler</td><td>调度中心基于访问压力自动增减服务提供者</td></tr><tr><td>Admin</td><td>统一管理控制台</td></tr><tr><td>Registry</td><td>服务注册与发现的注册中心</td></tr><tr><td>Monitor</td><td>统计服务的调用次数和调用时间的监控中心</td></tr></tbody></table><hr><h3 id="dubbo代码分析"><a href="#dubbo代码分析" class="headerlink" title="dubbo代码分析"></a>dubbo代码分析</h3><p><a href="http://www.cnblogs.com/javanoob/p/dubbo_menu.html" target="_blank" rel="noopener">分享链接</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文将适当的介绍&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;什么是dubbo（what）&lt;/li&gt;
+&lt;li&gt;何时该使用dubbo(why)&lt;/li&gt;
+&lt;li&gt;dubbo的原理(how)&lt;/li&gt;
+&lt;li&gt;dubbo源码的简单分析(think)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&quot;什么是dubbo&quot;&gt;&lt;a href=&quot;#什么是dubbo&quot; class=&quot;headerlink&quot; title=&quot;什么是dubbo&quot;&gt;&lt;/a&gt;什么是dubbo&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;dubbo?阿里巴巴淘宝团队荣誉出品，早期担当阿里rpc(远程调用工具)，在githup（一代码托管网站）上有迹可查的最早发行版本是&lt;strong&gt;on 27 Oct 2011&lt;/strong&gt;，据悉阿里内部已弃用dubbo改用HSF(俗称好舒服）。同时，提供与其类似服务的有Spring Cloud 当然后者提供的是一套完整微服务解决方案。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这张图片为我们展示了dubbo的架构&lt;br&gt;&lt;img src=&quot;http://dubbo.io/books/dubbo-user-book/sources/images/dubbo-architecture.jpg&quot; alt=&quot;image&quot;&gt;&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="架构" scheme="http://yoursite.com/tags/%E6%9E%B6%E6%9E%84/"/>
+    
+      <category term="微服务" scheme="http://yoursite.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>开始写文章</title>
+    <link href="http://yoursite.com/sweetboy/1abae1c9/"/>
+    <id>http://yoursite.com/sweetboy/1abae1c9/</id>
+    <published>2018-03-17T15:28:50.000Z</published>
+    <updated>2018-03-17T16:03:36.262Z</updated>
+    
+    <content type="html"><![CDATA[<script src="\assets\js\APlayer.min.js"> </script><p>事实证明，还是会有些人访问这个站点的，所以决定还是要写些东西。</p><hr><div class="note success"><h2 id="技术"><a href="#技术" class="headerlink" title="技术"></a>技术</h2></div>技术部分的文章可能会以电子科技信息技术为主，写法可能更希望能够串联各个知识点，由表象到底层,大概如此。一些语言的基础，操作系统，框架，架构方面。<div class="note success"><h2 id="随笔"><a href="#随笔" class="headerlink" title="随笔"></a>随笔</h2></div><p>其它的可能就是想写啥就写啥了，当个记录，可能会有很多不成熟的一面</p><hr><h4 id="今日写下此文，是为督促自己，白纸黑字，不可抵赖😂"><a href="#今日写下此文，是为督促自己，白纸黑字，不可抵赖😂" class="headerlink" title="今日写下此文，是为督促自己，白纸黑字，不可抵赖😂"></a>今日写下此文，是为督促自己，白纸黑字，不可抵赖😂</h4>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;script src=&quot;\assets\js\APlayer.min.js&quot;&gt; &lt;/script&gt;&lt;p&gt;事实证明，还是会有些人访问这个站点的，所以决定还是要写些东西。&lt;/p&gt;
+&lt;hr&gt;
+&lt;div class=&quot;note success&quot;&gt;&lt;h2 id=&quot;技术&quot;&gt;&lt;a href=
+      
+    
+    </summary>
+    
+    
+      <category term="随笔" scheme="http://yoursite.com/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>finenote</title>
+    <link href="http://yoursite.com/sweetboy/e05dcc7c/"/>
+    <id>http://yoursite.com/sweetboy/e05dcc7c/</id>
+    <published>2018-01-16T04:17:26.000Z</published>
+    <updated>2018-03-17T16:02:40.667Z</updated>
+    
+    <content type="html"><![CDATA[<script src="\assets\js\APlayer.min.js"> </script><hr><span itemprop="image" itemscope="" itemtype="http://schema.org/ImageObject"><img itemprop="url image" src="/images/wordcloud2.svg" class="full-image" alt="网络不佳" title="finenote"><meta itemprop="width" content="auto"><meta itemprop="height" content="auto"></span><style>#iii{margin-left: auto;margin-right: auto;height:80px;border:0px solid  #B0C4DE;} </style><img id="iii" src="https://github.com/xuhongda/pics/raw/master/facebook(1).png">   <script src="/js/src/jquery-3.2.1.min.js"></script><script type="text/javascript">    $("#iii").click(function(){    alert("欢迎访问😀这是我们的logo")    })</script><hr><div style="text-align:center; background:#e6e6e6; color:#DA70D6"><br><a href="http://www.finenote.cn/about/" target="_blank" rel="noopener"><i class="fa fa-user-circle" aria-hidden="true"></i>&nbsp;联系我</a><br><p><a href="https://www.instagram.com/hongda_xu_7/" target="_blank" rel="noopener"><i class="fa fa-instagram fa-1x" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://weibo.com/5190588357/profile?topnav=1&wvr=6" target="_blank" rel="noopener"><i class="fa fa-weibo fa-1x" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.facebook.com/profile.php?id=100010867770787" target="_blank" rel="noopener"><i class="fa fa-facebook-square fa-1x" aria-hidden="true"></i></a></p><br><p id="thanks"><i class="fa fa-heartbeat" aria-hidden="true"></i>统一鸣谢</p><br><script src="/js/src/jquery-3.2.1.min.js"></script><script type="text/javascript">    $("#thanks").click(function(){    alert("需要感谢：GitHub 微博 DaoVoice 以及为本站提供建议的小伙伴们👍")    })</script><br></div><hr>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;script src=&quot;\assets\js\APlayer.min.js&quot;&gt; &lt;/script&gt;&lt;hr&gt;
+&lt;span itemprop=&quot;image&quot; itemscope=&quot;&quot; itemtype=&quot;http://schema.org/ImageObject&quot;&gt;&lt;img ite
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>测试二：最终测试-视频-音乐</title>
+    <link href="http://yoursite.com/sweetboy/a422474b/"/>
+    <id>http://yoursite.com/sweetboy/a422474b/</id>
+    <published>2018-01-13T12:58:13.000Z</published>
+    <updated>2018-01-15T13:51:17.616Z</updated>
+    
+    <content type="html"><![CDATA[<script src="\assets\js\APlayer.min.js"> </script><p><blockquote class="blockquote-center"><i class="fa fa-user-circle" aria-hidden="true"></i>&nbsp;<a href="http://finenote.cn/about/" target="_blank" rel="noopener">关于作者</a> &nbsp;&nbsp;<i class="fa fa-university" aria-hidden="true"></i>&nbsp;<a href="http://finenote.cn/" target="_blank" rel="noopener">返回首页</a></blockquote></p><p><link href="http://cdn.webfont.youziku.com/webfonts/nomal/113135/45824/5a5b3ae1f629d908e4f46ab1.css" rel="stylesheet" type="text/css"><br><code>sorry 😭由于引用了服务器字体可能导致了字数统计功能失效</code></p><h2 id="基本完成"><a href="#基本完成" class="headerlink" title="基本完成"></a>基本完成</h2><p><body></body></p><p><div align="center"><br><img src="https://wxt.sinaimg.cn/thumb300/63885668ly1fmxzgonrafj22kw3vce84.jpg?tags=%5B%5D&quot;" alt="一张小姐姐的照片"><br></div><br><div class="note success"><p>&nbsp;&nbsp;<div class="cssf998748111b9ef"> 通过不断地查阅各种资料，这个站点的各个功能算是基本搭建好了。但是仍然有许多不够完美的地方，尤其是在移动端方面，一些侧边栏的功能直接在手机端无法显示。如果今后发现有趣，有用的功能还是会第一时间添加进去的。大家可以广泛的给我留言，写下你们宝贵的建议。</div></p></div><br></p><h3 id="这次测试的目的"><a href="#这次测试的目的" class="headerlink" title="这次测试的目的"></a>这次测试的目的</h3><a id="more"></a><hr><blockquote><p>&nbsp;&nbsp;这次主要是为了测试部署的这些功能，以及视频和音乐的外链。ok,下面就开始测试。。。</p></blockquote><hr><h3 id="预告"><a href="#预告" class="headerlink" title="预告"></a>预告</h3><div class="note warning"><p>&nbsp;&nbsp;桌面端与手机端的兼容适配仍然是个问题。如果你用的是桌面端访问的本页的话，那么一切看起来是正常的。<br>                  &nbsp;&nbsp;但是，如果你正在用手机浏览本页面，以下嵌入的几个视频可能都无法观看。其中某些浏览器还会遇到样式显示问题，如何解决这些问题，这是我接下来努力的方向，<br>                  &nbsp;&nbsp;打造一个视觉舒适，功能可靠页面需要花费不少时间，为此我专门研究了各种字体以及图片视频格式问题。但是，因为时间原因很多东西还未来的及加入到页面中来。<br>                  今后，这个站点<a href="http://finenote.cn/" target="_blank" rel="noopener">finenote.cn</a>希望能够长久的运行下去。记住站点结尾是.cn不是.com。</p></div><h3 id="测试视频"><a href="#测试视频" class="headerlink" title="测试视频"></a>测试视频</h3><hr><blockquote><p><strong>优酷&amp;爱奇艺</strong><br>&nbsp;&nbsp;<strong>bilibili</strong><br>&nbsp;&nbsp;b站的外链分享都无法很好的支持移动端，所以取消了b站的分享。<br>以下视频采用优酷和爱奇艺测试。<br><strong>优酷</strong><br>&nbsp;&nbsp;<code>一个偶然看到的视频，尼康百年。。。背景音乐不错</code></p><p><iframe height="498" width="510" src="http://player.youku.com/embed/XMjkyODAyMjQ2MA==" frameborder="0" 'allowfullscreen'=""></iframe><br><strong>爱奇艺</strong><br>&nbsp;&nbsp;<code>随便一个视频</code></p><h2 id=""><a href="#" class="headerlink" title=""></a><iframe src="http://open.iqiyi.com/developer/player_js/coopPlayerIndex.html?vid=a755b521b592ad5ebc5a37f609ffd84d&tvId=900662300&accessToken=2.f22860a2479ad60d8da7697274de9346&appKey=3955c3425820435e86d0f4cdfe56f5e7&appId=1368&height=100%&width=100%" frameborder="0" allowfullscreen="true" width="100%" height="100%"></iframe></h2></blockquote><h3 id="测试音乐"><a href="#测试音乐" class="headerlink" title="测试音乐"></a>测试音乐</h3><hr><blockquote><p><strong>网易云</strong><br>&nbsp;&nbsp;<font size="2">这几年版权问题逐渐得到重视，发现需要付费下载得歌曲，基本无法分享外链。<br>这样大多外文歌曲是无法直接贴出来了。</font><br><i class="fa fa-copyright" aria-hidden="true"></i><code>保护版权</code><br><strong>答案</strong></p><p><div align="center"></div></p><p><iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=28232019&auto=0&height=66"></iframe><br></p><hr><hr><p><strong>她的睫毛</strong></p><p><div align="center"><br><div id="aplayer0" class="aplayer" style="margin-bottom: 20px;"></div><script>var ap = new APlayer({element: document.getElementById("aplayer0"),narrow: false,autoplay: false,showlrc: 0,music: {title: "她的睫毛",author: "周杰伦",url: "http://home.ustc.edu.cn/~mmmwhy/%d6%dc%bd%dc%c2%d7%20-%20%cb%fd%b5%c4%bd%de%c3%ab.mp3",pic: "http://home.ustc.edu.cn/~mmmwhy/jay.jpg",}});window.aplayers || (window.aplayers = []);window.aplayers.push(ap);</script><br></div></p><hr></blockquote><h3 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h3><div class="note default"><p>&nbsp;&nbsp;最后希望大家，能够点击右下角的绿色按钮，给我发送消息。因为我想看到这消息组件的推送方式。<br>&nbsp;&nbsp;经过一些测试发现在移动端上，点击发送消息按钮失效。🎯<br>&nbsp;&nbsp;还有就是欢迎大家在下方的评论区留言，评论功能的效果我也是很期待的。</p><div align="center"><i class="fa fa-handshake-o" aria-hidden="true"></i></div></div>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;blockquote class=&quot;blockquote-center&quot;&gt;&lt;i class=&quot;fa fa-user-circle&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&amp;nbsp;&lt;a href=&quot;http://finenote.cn/about/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;关于作者&lt;/a&gt; &amp;nbsp;&amp;nbsp;&lt;i class=&quot;fa fa-university&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&amp;nbsp;&lt;a href=&quot;http://finenote.cn/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;返回首页&lt;/a&gt;&lt;/blockquote&gt;&lt;/p&gt;
+&lt;p&gt;&lt;link href=&quot;http://cdn.webfont.youziku.com/webfonts/nomal/113135/45824/5a5b3ae1f629d908e4f46ab1.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&lt;br&gt;&lt;code&gt;sorry 😭由于引用了服务器字体可能导致了字数统计功能失效&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id=&quot;基本完成&quot;&gt;&lt;a href=&quot;#基本完成&quot; class=&quot;headerlink&quot; title=&quot;基本完成&quot;&gt;&lt;/a&gt;基本完成&lt;/h2&gt;&lt;p&gt;&lt;body&gt;&lt;/body&gt;&lt;/p&gt;
+&lt;p&gt;&lt;div align=&quot;center&quot;&gt;&lt;br&gt;&lt;img src=&quot;https://wxt.sinaimg.cn/thumb300/63885668ly1fmxzgonrafj22kw3vce84.jpg?tags=%5B%5D&amp;quot;&quot; alt=&quot;一张小姐姐的照片&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;br&gt;&lt;div class=&quot;note success&quot;&gt;&lt;p&gt;&amp;nbsp;&amp;nbsp;&lt;div class=&quot;cssf998748111b9ef&quot;&gt; 通过不断地查阅各种资料，这个站点的各个功能算是基本搭建好了。但是仍然有许多不够完美的地方，尤其是在移动端方面，一些侧边栏的功能直接在手机端无法显示。如果今后发现有趣，有用的功能还是会第一时间添加进去的。大家可以广泛的给我留言，写下你们宝贵的建议。&lt;/div&gt;&lt;/p&gt;&lt;/div&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h3 id=&quot;这次测试的目的&quot;&gt;&lt;a href=&quot;#这次测试的目的&quot; class=&quot;headerlink&quot; title=&quot;这次测试的目的&quot;&gt;&lt;/a&gt;这次测试的目的&lt;/h3&gt;
+    
+    </summary>
+    
+      <category term="测试" scheme="http://yoursite.com/categories/%E6%B5%8B%E8%AF%95/"/>
+    
+    
+      <category term="测试" scheme="http://yoursite.com/tags/%E6%B5%8B%E8%AF%95/"/>
+    
+      <category term="完结" scheme="http://yoursite.com/tags/%E5%AE%8C%E7%BB%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>测试blog</title>
+    <link href="http://yoursite.com/sweetboy/f566646a/"/>
+    <id>http://yoursite.com/sweetboy/f566646a/</id>
+    <published>2018-01-12T11:11:26.000Z</published>
+    <updated>2018-01-15T06:55:11.328Z</updated>
+    
+    <content type="html"><![CDATA[<script src="\assets\js\APlayer.min.js"> </script><h4 id="这是一个测试"><a href="#这是一个测试" class="headerlink" title="这是一个测试"></a>这是一个测试</h4><p><img src="http://img.duoyi.com/com/157/pic/PL-6AlmW2YbjI.gif" alt="image"><br>&nbsp;&nbsp;这是一个测试，但这不是我的第一次测试了。前面用的MarkDown编辑器，写完后上传中文都乱码了。这次使用有道云笔记，希望不要再出现问题。<br><a id="more"></a></p><h4 id="为什么写"><a href="#为什么写" class="headerlink" title="为什么写"></a>为什么写</h4><p>&nbsp;&nbsp;最大的原因就是为了记录，记录一些自己的感想———关于知识，自己想到的，看到的，大概就是随便写写。</p><h4 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h4><p>&nbsp;&nbsp;容我测试下插入图片<br><img src="https://github.com/xuhongda/pics/raw/master/7e3e6709c93d70cfcdde5640f8dcd100baa12b53.gif" alt="image"></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;这是一个测试&quot;&gt;&lt;a href=&quot;#这是一个测试&quot; class=&quot;headerlink&quot; title=&quot;这是一个测试&quot;&gt;&lt;/a&gt;这是一个测试&lt;/h4&gt;&lt;p&gt;&lt;img src=&quot;http://img.duoyi.com/com/157/pic/PL-6AlmW2YbjI.gif&quot; alt=&quot;image&quot;&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;这是一个测试，但这不是我的第一次测试了。前面用的MarkDown编辑器，写完后上传中文都乱码了。这次使用有道云笔记，希望不要再出现问题。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="测试" scheme="http://yoursite.com/categories/%E6%B5%8B%E8%AF%95/"/>
+    
+    
+      <category term="测试" scheme="http://yoursite.com/tags/%E6%B5%8B%E8%AF%95/"/>
+    
+  </entry>
+  
+</feed>

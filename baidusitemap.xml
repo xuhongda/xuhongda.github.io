@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+
+    
+  <url>
+    <loc>http://yoursite.com/sweetboy/f0920783/</loc>
+    <lastmod>2018-03-23T12:50:06.033Z</lastmod>
+    <data>
+        <display>
+        <title>DUBBO浅析与手记</title>
+        <pubTime>2018-03-20T12:59:55.000Z</pubTime>
+        
+        <tag>架构</tag>
+         
+        <tag>微服务</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/sweetboy/1abae1c9/</loc>
+    <lastmod>2018-03-17T16:03:36.262Z</lastmod>
+    <data>
+        <display>
+        <title>开始写文章</title>
+        <pubTime>2018-03-17T15:28:50.000Z</pubTime>
+        
+        <tag>随笔</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/sweetboy/e05dcc7c/</loc>
+    <lastmod>2018-03-17T16:02:40.667Z</lastmod>
+    <data>
+        <display>
+        <title>finenote</title>
+        <pubTime>2018-01-16T04:17:26.000Z</pubTime>
+        
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+    
+  <url>
+    <loc>http://yoursite.com/sweetboy/a422474b/</loc>
+    <lastmod>2018-01-15T13:51:17.616Z</lastmod>
+    <data>
+        <display>
+        <title>测试二：最终测试-视频-音乐</title>
+        <pubTime>2018-01-13T12:58:13.000Z</pubTime>
+        
+        <tag>测试</tag>
+         
+        <tag>完结</tag>
+         
+         
+           
+             
+              <breadCrumb title="测试" url="http://yoursite.com/categories/%E6%B5%8B%E8%AF%95/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yoursite.com/sweetboy/f566646a/</loc>
+    <lastmod>2018-01-15T06:55:11.328Z</lastmod>
+    <data>
+        <display>
+        <title>测试blog</title>
+        <pubTime>2018-01-12T11:11:26.000Z</pubTime>
+        
+        <tag>测试</tag>
+         
+         
+           
+             
+              <breadCrumb title="测试" url="http://yoursite.com/categories/%E6%B5%8B%E8%AF%95/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+</urlset>
